@@ -1216,7 +1216,7 @@ def calccosinedif(model_a,model_b,mode,settings,include,calc):
     blocksim = {}
     blockvals = []
     attn2 = {}
-    isxl = "XL" == modeltype(load_torch_file(sd_models.get_closet_checkpoint_match(model_a).filename) if not (model_a in lora.available_loras) else lora.read_state_dict(lora.available_loras[model_a].filename,"cpu"))
+    isxl = "XL" == modeltype(load_torch_file(sd_models.get_closet_checkpoint_match(model_a).filename) if not (model_a in lora.available_loras) else lora.read_state_dict(lora.available_loras[model_a].filename,"cuda"))
     blockids = BLOCKIDXLL if isxl else BLOCKID
     for bl in blockids:
         blocksim[bl] = []
@@ -1242,7 +1242,8 @@ def calccosinedif(model_a,model_b,mode,settings,include,calc):
                 if key in b and a[key].size() == b[key].size():
                     a_flat = a[key].float().view(-1).cuda()
                     b_flat = b[key].float().view(-1).cuda()
-                    simab = torch.nn.functional.cosine_similarity(a_flat.unsqueeze(0), b_flat.unsqueeze(0))
+                    with torch.no_grad():
+                        simab = torch.nn.functional.cosine_similarity(a_flat.unsqueeze(0), b_flat.unsqueeze(0))
                     cosine_similarities.append(["LoRA", key, round(simab.item()*100,3)])
             if len(settings) > 1: savecalc(cosine_similarities,name,settings,False,"Elements",)
             del a ,b
@@ -1264,7 +1265,8 @@ def calccosinedif(model_a,model_b,mode,settings,include,calc):
                 if key in b and a[key].size() == b[key].size():
                     a_flat = a[key].float().view(-1).cuda()
                     b_flat = b[key].float().view(-1).cuda()
-                    simab = torch.nn.functional.cosine_similarity(a_flat.unsqueeze(0), b_flat.unsqueeze(0))
+                    with torch.no_grad():
+                       simab = torch.nn.functional.cosine_similarity(a_flat.unsqueeze(0), b_flat.unsqueeze(0))
                     cosine_similarities.append([blockfromkey(key,isxl)[0], key, round(simab.item()*100,3)])
 
              for bl in blockids:
@@ -1277,7 +1279,8 @@ def calccosinedif(model_a,model_b,mode,settings,include,calc):
                    if key in b and a[key].size() == b[key].size():
                       a_flat = a[key].float().view(-1).cuda()
                       b_flat = b[key].float().view(-1).cuda()
-                      simab = torch.nn.functional.cosine_similarity(a_flat.unsqueeze(0), b_flat.unsqueeze(0))
+                      with torch.no_grad():
+                         simab = torch.nn.functional.cosine_similarity(a_flat.unsqueeze(0), b_flat.unsqueeze(0))
                       vals.append(round(simab.item()*100,3))
                 val = None
                 if "Mean" in calc:
@@ -1299,6 +1302,8 @@ def calccosinedif(model_a,model_b,mode,settings,include,calc):
                 del a ,b
                 gc.collect()
                 return cosine_similarities
+
+#This change is because my instance wants to bite my ass in two and i'm tired, this probabyl does nothing? 
 
 def savecalc(data,name,settings,blocks,add):
     name = name + "_" + add
