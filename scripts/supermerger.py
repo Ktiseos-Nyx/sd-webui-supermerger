@@ -1060,12 +1060,35 @@ def modeltype(sd):
     else:
         return "1.X or 2.X"
 
+#def loadkeys(model_a, lora):
+ #   if lora:
+  #      import lora
+   #     sd = sd_models.read_state_dict(lora.available_loras[model_a].filename,"cpu")
+   # else:
+    #    sd = loadmodel(model_a)
+    #keys = []
+   # mtype = modeltype(sd)
+#
+ #   if lora:
+      #  for i, key in enumerate(sd.keys()):
+ #           keys.append([i,"LoRA",key,sd[key].shape])
+ #   else:    
+  #      for i, key in enumerate(sd.keys()):
+     #       keys.append([i,blockfromkey(key,"XL" in mtype,"flux" in mtype),key,sd[key].shape])
+
+ #   return keys,keys
+# "LAZY LOADING" MIGHT WORK, if it doesn't recomment in the old stuff
 def loadkeys(model_a, lora):
     if lora:
         import lora
-        sd = sd_models.read_state_dict(lora.available_loras[model_a].filename,"cpu")
+        sd = lora.read_state_dict(lora.available_loras[model_a].filename,"cpu")
     else:
-        sd = loadmodel(model_a)
+        checkpoint_info = sd_models.get_closet_checkpoint_match(model_a)
+        if not forge:
+            sd = sd_models.read_state_dict(checkpoint_info.filename,"cpu",load_weights = False)
+        else:
+           sd = load_torch_file(checkpoint_info.filename) # can't prevent loading with forge
+    
     keys = []
     mtype = modeltype(sd)
 
