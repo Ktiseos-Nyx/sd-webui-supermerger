@@ -1115,6 +1115,98 @@ ALL_U	U,U,U,U,U,U,U,U,U,U,U,U,U,U,U,U,U,U,U,U,U,U,U,U,U,U\n\
 ALL_X	X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X\n\
 "
 
+#def calccosinedif(model_a,model_b,mode,settings,include,calc):
+   # inc = " ".join(include)
+   # settings = " ".join(settings)
+  #  
+   # name = filenamecutter(model_a) + "-" + filenamecutter(model_b)
+ #  cosine_similarities = []
+  #  blocksim = {}
+   # blockvals = []
+ #   attn2 = {}
+ #   isxl = "XL" == modeltype(sd_models.read_state_dict(sd_models.get_closet_checkpoint_match(model_a).filename,"cpu",load_weights=False) if not (model_a in lora.available_loras) else lora.read_state_dict(lora.available_loras[model_a].filename,"cpu"))
+ #   blockids = BLOCKIDXLL if isxl else BLOCKID
+#    for bl in blockids:
+    #    blocksim[bl] = []
+#    blocksim["VAE"] = []
+
+  #  if "ASim" in mode:
+   #     a, b = loadmodel(model_a), loadmodel(model_b)
+   #     result = asimilarity(a,b,isxl)
+     #   if len(settings) > 1: savecalc(result,name,settings,True,"Asim")
+      #  del a ,b
+       # gc.collect()
+ #       return result
+  #  else:
+        
+     #   if lora.is_available() and (model_a in lora.available_loras or model_b in lora.available_loras):
+     #       if (model_a in lora.available_loras): a = lora.read_state_dict(lora.available_loras[model_a].filename,"cpu")
+      #      else: a = loadmodel(model_a)
+        # v   if (model_b in lora.available_loras): b = lora.read_state_dict(lora.available_loras[model_b].filename,"cpu")
+      #      else: b = loadmodel(model_b)
+      # #     mtype = "LoRA"
+          #  for key in tqdm(a.keys(), desc="Calculating cosine similarity"):
+             #   if "model_ema" in key: continue
+             #   if key in b and a[key].size() == b[key].size():
+         #           a_flat = a[key].view(-1).to(torch.float32)
+            #        b_flat = b[key].view(-1).to(torch.float32)
+          #   #       simab = torch.nn.functional.cosine_similarity(a_flat.unsqueeze(0), b_flat.unsqueeze(0))
+                #    cosine_similarities.append(["LoRA", key, round(simab.item()*100,3)])
+         #   if len(settings) > 1: savecalc(cosine_similarities,name,settings,False,"Elements",)
+       #     del a ,b
+               #            gc.collect()
+             #              return cosine_similarities
+               #        else:
+              #              a = sd_models.read_state_dict(sd_models.get_closet_checkpoint_match(model_a).filename,"cpu")
+                #            b = sd_models.read_state_dict(sd_models.get_closet_checkpoint_match(model_b).filename,"cpu")
+              #              for key in tqdm(a.keys(), desc="Calculating cosine similarity"):
+             #                  block = None
+                #               if blockfromkey(key,isxl) == "Not Merge": continue
+                  #             if "model_ema" in key: continue
+                 #              if "model" not in key:continue
+                 #              if "first_stage_model" in key and not ("VAE" in inc):
+                 #                  continue
+                  #             elif "first_stage_model" in key and "VAE" in inc:
+                  #                 block = "VAE"
+                  #             if "diffusion_model" in key and not ("U-Net" in inc): continue
+                #               #               if "encoder" in key and not ("encoder" in inc): continue
+                #               if key in b and a[key].size() == b[key].size():
+                #                   a_flat = a[key].view(-1).to(torch.float32)
+                    #               b_flat = b[key].view(-1).to(torch.float32)
+                #                   simab = torch.nn.functional.cosine_similarity(a_flat.unsqueeze(0), b_flat.unsqueeze(0))
+                   #                if block is None: block,blocks26 = blockfromkey(key,isxl)
+                      #             if block =="Not Merge" :continue
+                 #                 cosine_similarities.append([block, key, round(simab.item()*100,3)])
+                      #             blocksim[blocks26].append(round(simab.item()*100,3))
+                    #               if "attn2.to_out.0.weight" in key: attn2[block] = round(simab.item()*100,3)
+
+          #  for bl in blockids:
+           #     val = None
+  #              if bl == "Not Merge": continue
+             #   if bl not in blocksim.keys():continue
+  #              if blocksim[bl] == []: continue
+           #     if "Mean" in calc:
+     #              val = mean(blocksim[bl])
+   #             elif "Min" in calc:
+   #                 val = min(blocksim[bl])
+ #               else:
+ #                  if bl in attn2.keys():val = attn2[bl]
+#                if val:blockvals.append([bl,"",round(val,3)])
+        #        if mode != "Element": cosine_similarities.insert(0,[bl,"",round(mean(blocksim[bl]),3)])
+
+        #     if mode == "Block":
+             #   if len(settings) > 1: savecalc(blockvals,name,settings,True,"Blocks")
+            #    del a ,b
+            #    gc.collect()
+     #           return blockvals
+         #    else:
+            #    if len(settings) > 1: savecalc(cosine_similarities,name,settings,False,"Elements",)
+            #    del a ,b
+               # gc.collect()
+              #  return cosine_similarities
+
+# Commented out the original version - i'm strugglign with something this doesn't mean this is permanent.
+
 def calccosinedif(model_a,model_b,mode,settings,include,calc):
     inc = " ".join(include)
     settings = " ".join(settings)
@@ -1124,7 +1216,7 @@ def calccosinedif(model_a,model_b,mode,settings,include,calc):
     blocksim = {}
     blockvals = []
     attn2 = {}
-    isxl = "XL" == modeltype(sd_models.read_state_dict(sd_models.get_closet_checkpoint_match(model_a).filename,"cpu",load_weights=False) if not (model_a in lora.available_loras) else lora.read_state_dict(lora.available_loras[model_a].filename,"cpu"))
+    isxl = "XL" == modeltype(load_torch_file(sd_models.get_closet_checkpoint_match(model_a).filename) if not (model_a in lora.available_loras) else lora.read_state_dict(lora.available_loras[model_a].filename,"cpu"))
     blockids = BLOCKIDXLL if isxl else BLOCKID
     for bl in blockids:
         blocksim[bl] = []
@@ -1140,16 +1232,16 @@ def calccosinedif(model_a,model_b,mode,settings,include,calc):
     else:
         
         if lora.is_available() and (model_a in lora.available_loras or model_b in lora.available_loras):
-            if (model_a in lora.available_loras): a = lora.read_state_dict(lora.available_loras[model_a].filename,"cpu")
+            if (model_a in lora.available_loras): a = lora.read_state_dict(lora.available_loras[model_a].filename,"cuda")
             else: a = loadmodel(model_a)
-            if (model_b in lora.available_loras): b = lora.read_state_dict(lora.available_loras[model_b].filename,"cpu")
+            if (model_b in lora.available_loras): b = lora.read_state_dict(lora.available_loras[model_b].filename,"cuda")
             else: b = loadmodel(model_b)
             mtype = "LoRA"
-            for key in tqdm(a.keys(), desc="Calculating cosine similarity"):
+            for key in a.keys():
                 if "model_ema" in key: continue
                 if key in b and a[key].size() == b[key].size():
-                    a_flat = a[key].view(-1).to(torch.float32)
-                    b_flat = b[key].view(-1).to(torch.float32)
+                    a_flat = a[key].float().view(-1).cuda()
+                    b_flat = b[key].float().view(-1).cuda()
                     simab = torch.nn.functional.cosine_similarity(a_flat.unsqueeze(0), b_flat.unsqueeze(0))
                     cosine_similarities.append(["LoRA", key, round(simab.item()*100,3)])
             if len(settings) > 1: savecalc(cosine_similarities,name,settings,False,"Elements",)
@@ -1157,10 +1249,9 @@ def calccosinedif(model_a,model_b,mode,settings,include,calc):
             gc.collect()
             return cosine_similarities
         else:
-             a = sd_models.read_state_dict(sd_models.get_closet_checkpoint_match(model_a).filename,"cpu")
-             b = sd_models.read_state_dict(sd_models.get_closet_checkpoint_match(model_b).filename,"cpu")
-             for key in tqdm(a.keys(), desc="Calculating cosine similarity"):
-                block = None
+             a = load_torch_file(sd_models.get_closet_checkpoint_match(model_a).filename)
+             b = load_torch_file(sd_models.get_closet_checkpoint_match(model_b).filename)
+             for key in a.keys():
                 if blockfromkey(key,isxl) == "Not Merge": continue
                 if "model_ema" in key: continue
                 if "model" not in key:continue
@@ -1171,28 +1262,32 @@ def calccosinedif(model_a,model_b,mode,settings,include,calc):
                 if "diffusion_model" in key and not ("U-Net" in inc): continue
                 if "encoder" in key and not ("encoder" in inc): continue
                 if key in b and a[key].size() == b[key].size():
-                    a_flat = a[key].view(-1).to(torch.float32)
-                    b_flat = b[key].view(-1).to(torch.float32)
+                    a_flat = a[key].float().view(-1).cuda()
+                    b_flat = b[key].float().view(-1).cuda()
                     simab = torch.nn.functional.cosine_similarity(a_flat.unsqueeze(0), b_flat.unsqueeze(0))
-                    if block is None: block,blocks26 = blockfromkey(key,isxl)
-                    if block =="Not Merge" :continue
-                    cosine_similarities.append([block, key, round(simab.item()*100,3)])
-                    blocksim[blocks26].append(round(simab.item()*100,3))
-                    if "attn2.to_out.0.weight" in key: attn2[block] = round(simab.item()*100,3)
+                    cosine_similarities.append([blockfromkey(key,isxl)[0], key, round(simab.item()*100,3)])
 
              for bl in blockids:
-                val = None
                 if bl == "Not Merge": continue
                 if bl not in blocksim.keys():continue
                 if blocksim[bl] == []: continue
+                vals = []
+                for key in a.keys():
+                  if blockfromkey(key,isxl)[0] == bl:
+                   if key in b and a[key].size() == b[key].size():
+                      a_flat = a[key].float().view(-1).cuda()
+                      b_flat = b[key].float().view(-1).cuda()
+                      simab = torch.nn.functional.cosine_similarity(a_flat.unsqueeze(0), b_flat.unsqueeze(0))
+                      vals.append(round(simab.item()*100,3))
+                val = None
                 if "Mean" in calc:
-                   val = mean(blocksim[bl])
+                    val = mean(vals)
                 elif "Min" in calc:
-                    val = min(blocksim[bl])
+                    val = min(vals)
                 else:
-                   if bl in attn2.keys():val = attn2[bl]
+                  if bl in attn2.keys():val = attn2[bl]
                 if val:blockvals.append([bl,"",round(val,3)])
-                if mode != "Element": cosine_similarities.insert(0,[bl,"",round(mean(blocksim[bl]),3)])
+                if mode != "Element": cosine_similarities.insert(0,[bl,"",round(mean(vals),3)])
 
              if mode == "Block":
                 if len(settings) > 1: savecalc(blockvals,name,settings,True,"Blocks")
